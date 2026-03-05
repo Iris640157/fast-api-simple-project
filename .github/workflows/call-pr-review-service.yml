@@ -1,0 +1,29 @@
+# Everything is done by pr_automation_system: fetch PR, ensure KB, review, post comment.
+# CI only passes repo_id and pr_number. Add secret REVIEW_SERVICE_URL. Service needs GITHUB_TOKEN.
+
+name: PR Review (via service)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Request review (service fetches PR, ensures KB, reviews, posts comment)
+        env:
+          REVIEW_SERVICE_URL: ${{ secrets.REVIEW_SERVICE_URL }}
+          REPO_ID: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ -z "$REVIEW_SERVICE_URL" ]; then
+            echo "REVIEW_SERVICE_URL not set; skipping."
+            exit 0
+          fi
+          curl -sf -X POST "${REVIEW_SERVICE_URL%/}/review" \
+            -H "Content-Type: application/json" \
+            -d "{\"repo_id\":\"$REPO_ID\",\"pr_number\":$PR_NUMBER}"
+        continue-on-error: true
