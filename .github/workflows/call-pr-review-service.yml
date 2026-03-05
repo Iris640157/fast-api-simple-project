@@ -31,9 +31,10 @@ jobs:
             exit 1
           fi
 
+          # Use X-GitHub-Token (proxies like ngrok often strip Authorization)
           HTTP_CODE=$(curl -s -w "%{http_code}" -o /tmp/review_response.json -X POST "${REVIEW_SERVICE_URL%/}/review" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Token: $GITHUB_TOKEN" \
             -d "{\"repo_id\":\"$REPO_ID\",\"pr_number\":$PR_NUMBER}")
           if [ "$HTTP_CODE" -ge 400 ]; then
             echo "Review service returned HTTP $HTTP_CODE:"
