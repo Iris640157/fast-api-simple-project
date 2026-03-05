@@ -13,3 +13,13 @@ async def root():
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@app.get("/api/info")
+async def app_info():
+    """Basic metadata endpoint for smoke testing."""
+    return {
+        "service": "pr_system_test_project",
+        "version": "0.1.0",
+        "review_mode": "central_service",
+    }

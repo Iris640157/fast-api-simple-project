@@ -2,6 +2,12 @@
 
 This is a minimal FastAPI project used to test integration with the central PR review service.
 
+## Local API endpoints
+
+- `GET /` - basic hello message
+- `GET /health` - service health check
+- `GET /api/info` - app metadata for smoke testing
+
 ## How review works
 
 When you open or update a pull request, a GitHub Action calls the deployed PR review service with the PR diff. The service runs a RAG-based review against this repo's guidelines and posts the result as a comment on the PR.
