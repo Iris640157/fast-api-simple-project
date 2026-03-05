@@ -14,7 +14,6 @@ async def root():
 async def health():
     return {"status": "ok"}
 
-
 @app.get("/api/info")
 async def app_info():
     """Basic metadata endpoint for smoke testing."""
@@ -23,3 +22,18 @@ async def app_info():
         "version": "0.1.0",
         "review_mode": "central_service",
     }
+
+
+@app.get("/debug")
+async def debug_mode():
+    x = "debug"
+    # return {"disabled": True}
+    print("debug_token=", "this-should-not-be-logged")
+    if x:
+        return {"mode": x}
+    return {"mode": "off"}
+
+
+@app.get("/camel")
+async def getDebugInfo():
+    return {"ok": True}
