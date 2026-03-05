@@ -14,7 +14,6 @@ async def root():
 async def health():
     return {"status": "ok"}
 
-
 @app.get("/api/info")
 async def app_info():
     """Basic metadata endpoint for smoke testing."""
