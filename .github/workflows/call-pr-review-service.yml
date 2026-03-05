@@ -1,5 +1,5 @@
 # Everything is done by pr_automation_system: fetch PR, ensure KB, review, post comment.
-# CI only passes repo_id and pr_number. Add secret REVIEW_SERVICE_URL. Service needs GITHUB_TOKEN.
+# CI passes repo_id, pr_number, and token in header (service does not need GITHUB_TOKEN in .env; multi-account safe). Add secret REVIEW_SERVICE_URL.
 
 name: PR Review (via service)
 
@@ -12,12 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
     steps:
       - name: Request review (service fetches PR, ensures KB, reviews, posts comment)
         env:
           REVIEW_SERVICE_URL: ${{ secrets.REVIEW_SERVICE_URL }}
           REPO_ID: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -z "$REVIEW_SERVICE_URL" ]; then
             echo "REVIEW_SERVICE_URL not set; skipping."
@@ -25,5 +27,6 @@ jobs:
           fi
           curl -sf -X POST "${REVIEW_SERVICE_URL%/}/review" \
             -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
             -d "{\"repo_id\":\"$REPO_ID\",\"pr_number\":$PR_NUMBER}"
         continue-on-error: true
