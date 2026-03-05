@@ -19,12 +19,18 @@ jobs:
           REVIEW_SERVICE_URL: ${{ secrets.REVIEW_SERVICE_URL }}
           REPO_ID: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.REVIEW_GITHUB_TOKEN }}
         run: |
           if [ -z "$REVIEW_SERVICE_URL" ]; then
             echo "REVIEW_SERVICE_URL not set; skipping."
             exit 0
           fi
+          
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "ERROR: GITHUB_TOKEN is empty. Add REVIEW_GITHUB_TOKEN secret or check permissions."
+            exit 1
+          fi
+
           HTTP_CODE=$(curl -s -w "%{http_code}" -o /tmp/review_response.json -X POST "${REVIEW_SERVICE_URL%/}/review" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
