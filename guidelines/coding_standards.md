@@ -21,5 +21,8 @@ Use this document when reviewing pull requests for this project.
 
 ## Security
 
-- Do not log or expose secrets or API keys.
-- Validate and sanitize user input.
+- Do not log or expose secrets or API keys. Never print, log, or return tokens, passwords, or API keys.
+- Do not hardcode secrets (API keys, passwords, tokens) in source code. Use environment variables or a secrets manager.
+- Validate and sanitize user input. Do not pass user input directly to database queries or shell commands.
+- Do not use `eval()` or `exec()` with user-provided input.
+- Use parameterized queries for database access; avoid string concatenation for SQL.
