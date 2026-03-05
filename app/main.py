@@ -37,3 +37,16 @@ async def debug_mode():
 @app.get("/camel")
 async def getDebugInfo():
     return {"ok": True}
+
+# Intentional security violations for PR review testing
+API_KEY = "sk-live-abc123secret456"  # Hardcoded secret - violates guideline
+
+
+@app.get("/api/search")
+async def search_items(q: str):
+    """Search items by name. Intentionally violates security guidelines for testing."""
+    print("API_KEY used:", API_KEY)  # Logging secret - violates guideline
+    # Unsafe: user input in string concatenation (SQL-like) - violates guideline
+    query = "SELECT * FROM items WHERE name LIKE '%" + q + "%'"
+    return {"query": query, "results": []}
+
