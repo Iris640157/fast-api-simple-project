@@ -37,3 +37,13 @@ async def debug_mode():
 @app.get("/camel")
 async def getDebugInfo():
     return {"ok": True}
+
+
+@app.get("/api/items")
+async def list_items(limit: int = 10):
+    """Return a list of mock items for testing."""
+    items = [
+        {"id": i, "name": f"item_{i}", "active": i % 2 == 0}
+        for i in range(1, min(limit, 100) + 1)
+    ]
+    return {"items": items, "count": len(items)}
